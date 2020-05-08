@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^3.5.7"
+    "mongodb": "^3.5.7",
+    "prompt-sync": "^4.2.0"
   }
 }
