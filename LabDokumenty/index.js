@@ -22,8 +22,9 @@ createMenu = () => {
   console.log('2. Dodaj ');
   console.log('3. Update ');
   console.log('4. Usun ');
-  console.log('5. Wypisz po danym id: ')
-  console.log('5. Wyjscie');
+  console.log('5. Wypisz po danym id: ');
+  console.log('6. Wypisz po managerze ');
+  console.log('7. Wyjscie');
 };
 function addTask() {
   taskId++;
@@ -58,7 +59,7 @@ function printData() {
     snapshot.forEach(function (childSnapshot) {
       let key = childSnapshot.key;
       let childData = childSnapshot.val();
-      console.log(key +" -> "+childData);
+      console.log(key +" -> "); console.log(childData);
     });
   });
 }
@@ -122,6 +123,6 @@ action = (number) => {
       break;
   }
 };
-
+createMenu();
 const number = prompt('Twoj wybor to: ');
 action(number);
