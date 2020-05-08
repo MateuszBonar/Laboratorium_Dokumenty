@@ -22,6 +22,7 @@ createMenu = () => {
   console.log('2. Dodaj ');
   console.log('3. Update ');
   console.log('4. Usun ');
+  console.log('5. Wypisz po danym id: ')
   console.log('5. Wyjscie');
 };
 function addTask() {
@@ -43,18 +44,53 @@ function deleteTask(deleteTaskId) {
   console.log('Usunieto');
 }
 
-function updateTask(deleteTaskId,taskManager, timeRepair) {
-    let userRef = firebase.database().ref('tasks/' + deleteTaskId);
+function updateTask(deleteTaskId, taskManager, timeRepair) {
+  let userRef = firebase.database().ref('tasks/' + deleteTaskId);
   var updateData = {
     taskManager: taskManager,
     timeRepair: timeRepair,
   };
   userRef.update(updateData);
 }
+function printData() {
+  let userDataRef = firebase.database().ref('tasks').orderByKey();
+  userDataRef.once('value').then(function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      let key = childSnapshot.key;
+      let childData = childSnapshot.val();
+      console.log(key +" -> "+childData);
+    });
+  });
+}
+function printByTaskManager(name){
+  let userDataRef = firebase.database().ref('tasks').orderByKey();
+  userDataRef.once('value').then(function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      let key = childSnapshot.key;
+      let childData = childSnapshot.val();
+      if(childData === name)
+      {
+        console.log(key +" -> "+childData);
+      }
+     
+    });
+  });
+}
+function printDataById(printDataId){
+  let userDataRef = firebase.database().ref('tasks/'+printDataId).orderByKey();
+  userDataRef.once('value').then(function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      let key = childSnapshot.key;
+      let childData = childSnapshot.val();
+      console.log(key +" -> "); console.log(childData);
+    });
+  });
+}
 
 action = (number) => {
   switch (parseInt(number)) {
     case 1:
+      printData();
       console.log('wybrales wyswietlenie bazy');
       break;
     case 2:
@@ -71,6 +107,15 @@ action = (number) => {
       deleteTask(deleteTaskId);
       break;
     case 5:
+      const printDataId = prompt('Podaj id do wypisania: ')
+      printDataById(printDataId);
+      break;
+    case 6:
+      const name = prompt("Poda imie managera naprawy: ")
+      printByTaskManager(name)
+      break;
+
+    case 7:
       choose = false;
       console.log('Konczymy program');
       stopScript();
