@@ -130,6 +130,6 @@ action = (number) => {
   }
 };
 createMenu();
-fillData();
+//fillData();
 const number = prompt('Twoj wybor to: ');
 action(number);
