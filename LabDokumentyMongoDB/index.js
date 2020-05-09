@@ -14,7 +14,8 @@ createMenu = () => {
   console.log('4. Usun ');
   console.log('5. Wypisz po ID');
   console.log('6. Wyszukaj po nazwie zwierzeta');
-  console.log('7. Wyjscie');
+  console.log('7. Wyszukaj zwierzeta z wiekiem wiekszym niz..');
+  console.log('8. Wyjscie');
 };
 
 addAnimal = () => {
@@ -75,9 +76,19 @@ printAnimalById = () => {
     console.log('Nazwa: ' + result.nameAnimal + '  wiek:  ' + result.age);
   });
 };
+printAnimalByAge =()=>{
+  const printAnimalAge = prompt('Zwierzete od jakiego wieku chcesz zobaczyc?: ');
+  animals.find({age : {$gt : printAnimalAge}}).toArray((err, animalList) =>{
+    if (err) {
+      console.log('Bledne zapytanie');
+    } else {
+      console.log('Zwierzęta:', animalList);
+    }
+  })
+}
 printAnimalByName = () => {
    const printAnimalName = prompt('Jakie zwierze chcesz wyszukac: ');
-  animals.find({nameAnimal:printAnimalName}).toArray((err, animalList) => {
+   animals.find({nameAnimal:printAnimalName}).toArray((err, animalList) => {
     if (err) {
       console.log('Bledne zapytanie');
     } else {
@@ -106,6 +117,9 @@ action = (number) => {
       printAnimalByName();
       break;
     case 7:
+      printAnimalByAge();
+      break;  
+    case 8:
       console.log('Konczymy program');
       client.close();
       break;
