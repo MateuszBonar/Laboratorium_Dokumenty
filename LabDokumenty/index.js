@@ -4,7 +4,7 @@ require('firebase/database');
 const prompt = require('prompt-sync')();
 const data = new Date();
 const time = data.getTime();
-let taskId = time;
+let animalId = time;
 
 var firebaseConfig = {
   apiKey: 'AIzaSyBzn2jQ_x5v9oHj3OS7Sjn_tLlmBH2Z2ps',
@@ -18,43 +18,41 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 createMenu = () => {
   console.log('Witaj w menu:');
-  console.log('1. Wyswietl wszystkie rekordy');
+  console.log('1. Wyswietl wszystkie zwierzeta');
   console.log('2. Dodaj ');
   console.log('3. Update ');
   console.log('4. Usun ');
   console.log('5. Wypisz po danym id: ');
-  console.log('6. Wypisz po managerze ');
+  console.log('6. Wypisz po imieniu ');
   console.log('7. Wyjscie');
 };
-function addTask() {
-  taskId++;
-  const taskManager = prompt('Task Manager: ');
-  const timeRepair = prompt('TimeRepair: ');
-  let userRef = firebase.database().ref('tasks/' + taskId);
+function addAnimal(nameAnimal,age) {
+  animalId++;
+  let userRef = firebase.database().ref('zoo/' + animalId);
   let object = {
-    taskManager: taskManager,
-    timeRepair: timeRepair,
+    nameAnimal: nameAnimal,
+    age: age,
   };
 
   userRef.set(object).then().catch();
-  console.log('Added!');
+  console.log('Dodano!');
 }
-function deleteTask(deleteTaskId) {
-  let userRef = firebase.database().ref('tasks/' + deleteTaskId);
+function deleteAnimal(deleteAnimalId) {
+  let userRef = firebase.database().ref('zoo/' + deleteAnimalId);
   userRef.remove();
   console.log('Usunieto');
 }
-
-function updateTask(deleteTaskId, taskManager, timeRepair) {
-  let userRef = firebase.database().ref('tasks/' + deleteTaskId);
+function updateAnimal(updateAnimalId, nameAnimal, age) {
+  let userRef = firebase.database().ref('zoo/' + updateAnimalId);
   var updateData = {
-    taskManager: taskManager,
-    timeRepair: timeRepair,
+    nameAnimal: nameAnimal,
+    age: age,
   };
   userRef.update(updateData);
+  console.log("Zmieniono!")
 }
 function printData() {
-  let userDataRef = firebase.database().ref('tasks').orderByKey();
+  let userDataRef = firebase.database().ref('zoo').orderByKey();
   userDataRef.once('value').then(function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
       let key = childSnapshot.key;
@@ -63,8 +61,8 @@ function printData() {
     });
   });
 }
-function printByTaskManager(name){
-  let userDataRef = firebase.database().ref('tasks').orderByKey();
+function printByNameAnimal(name){
+  let userDataRef = firebase.database().ref('zoo').orderByKey();
   userDataRef.once('value').then(function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
       let key = childSnapshot.key;
@@ -78,7 +76,7 @@ function printByTaskManager(name){
   });
 }
 function printDataById(printDataId){
-  let userDataRef = firebase.database().ref('tasks/'+printDataId).orderByKey();
+  let userDataRef = firebase.database().ref('zoo/'+printDataId).orderByKey();
   userDataRef.once('value').then(function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
       let key = childSnapshot.key;
@@ -86,6 +84,13 @@ function printDataById(printDataId){
       console.log(key +" -> "); console.log(childData);
     });
   });
+}
+fillData = ()=>{
+  addAnimal("Kaczuszka", 11);
+  addAnimal("Kotek",22);
+  addAnimal("Zyrafa",40);
+  addAnimal("Lew",12);
+  addAnimal('Malpka',5);
 }
 
 action = (number) => {
@@ -95,27 +100,28 @@ action = (number) => {
       console.log('wybrales wyswietlenie bazy');
       break;
     case 2:
-      addTask();
+      const nameAnimal = prompt('Nazwa zwierzatka: ');
+      const age = prompt('Wiek: ');
+      addAnimal(nameAnimal,age);
       break;
     case 3:
-      const updateTaskId = prompt('Podaj id do update:');
-      const taskManager = prompt('Task Manager: ');
-      const timeRepair = prompt('TimeRepair: ');
-      updateTask(updateTaskId, taskManager, timeRepair);
+      const updateAnimalId = prompt('Podaj id do update:');
+      const nameAnimalUpdate = prompt('Imie zwierzatka ');
+      const ageUpdate = prompt('Wiek: ');
+      updateAnimal(updateAnimalId, nameAnimalUpdate, ageUpdate);
       break;
     case 4:
-      const deleteTaskId = prompt('Podaj id do usuniecia:');
-      deleteTask(deleteTaskId);
+      const deleteAnimalId = prompt('Podaj id do usuniecia:');
+      deleteAnimal(deleteAnimalId);
       break;
     case 5:
       const printDataId = prompt('Podaj id do wypisania: ')
       printDataById(printDataId);
       break;
     case 6:
-      const name = prompt("Poda imie managera naprawy: ")
-      printByTaskManager(name)
+      const name = prompt("Poda nazwe zwierzatka: ")
+      printByNameAnimal(name)
       break;
-
     case 7:
       choose = false;
       console.log('Konczymy program');
@@ -124,5 +130,6 @@ action = (number) => {
   }
 };
 createMenu();
+fillData();
 const number = prompt('Twoj wybor to: ');
 action(number);

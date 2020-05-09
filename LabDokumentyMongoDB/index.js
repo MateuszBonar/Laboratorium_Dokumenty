@@ -125,7 +125,6 @@ action = (number) => {
       break;
   }
 };
-
 var db;
 var animals;
 client.connect(() => {
