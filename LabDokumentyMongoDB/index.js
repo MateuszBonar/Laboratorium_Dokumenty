@@ -13,6 +13,7 @@ createMenu = () => {
   console.log('3. Update ');
   console.log('4. Usun ');
   console.log('5. Wypisz po ID');
+  console.log('6. Wyszukaj po nazwie zwierzeta');
   console.log('7. Wyjscie');
 };
 
@@ -33,6 +34,27 @@ addAnimal = () => {
     }
   );
 };
+updateAnimal = () => {
+  const animalToUpdate = prompt('Jakie id zwierzecia chcesz updatowac? : ');
+  const animalToUpdateName = prompt('Podaj nowa nazwe: ');
+  const animalToUpdateAge = prompt('Podaj nowy wiek zwierzecia: ');
+  animals.findOneAndUpdate(
+    { _id: ObjectId(animalToUpdate) },
+    {
+      $set: {
+        nameAnimal: animalToUpdateName,
+        age: animalToUpdateAge,
+      },
+    },
+    function (err) {
+      if (err) {
+        console.log('Cos poszlo nie tak');
+      } else {
+        console.log('Update pomyslny!');
+      }
+    }
+  );
+};
 deleteAnimal = () => {
   const animalId = prompt('Id zwierzatka do usuniecia: ');
   animals.deleteOne({ _id: mongo.ObjectID(animalId) });
@@ -47,10 +69,20 @@ printAnimal = () => {
   });
 };
 printAnimalById = () => {
-  const printAnimalId = prompt('Jakie zwierze chcesz wyszukac: ');
+  const printAnimalId = prompt('Jakie zwierze chcesz wyszukac (ID): ');
   animals.findOne({ _id: ObjectId(printAnimalId) }, (err, result) => {
     if (err) throw err;
     console.log('Nazwa: ' + result.nameAnimal + '  wiek:  ' + result.age);
+  });
+};
+printAnimalByName = () => {
+   const printAnimalName = prompt('Jakie zwierze chcesz wyszukac: ');
+  animals.find({nameAnimal:printAnimalName}).toArray((err, animalList) => {
+    if (err) {
+      console.log('Bledne zapytanie');
+    } else {
+      console.log('Zwierzęta:', animalList);
+    }
   });
 };
 action = (number) => {
@@ -62,7 +94,7 @@ action = (number) => {
       addAnimal();
       break;
     case 3:
-      // updateAnimal()
+      updateAnimal();
       break;
     case 4:
       deleteAnimal();
@@ -70,9 +102,12 @@ action = (number) => {
     case 5:
       printAnimalById();
       break;
+    case 6:
+      printAnimalByName();
+      break;
     case 7:
       console.log('Konczymy program');
-      stopScript();
+      client.close();
       break;
   }
 };
