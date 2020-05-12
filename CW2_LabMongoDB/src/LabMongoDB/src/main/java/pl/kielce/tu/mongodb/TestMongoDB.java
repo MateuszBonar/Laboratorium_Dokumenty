@@ -1,11 +1,5 @@
 package pl.kielce.tu.mongodb;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.elemMatch;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.exists;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.lt;
-import static com.mongodb.client.model.Filters.or;
+import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.inc;
 
@@ -13,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mongodb.MongoCredential;
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
@@ -25,16 +20,18 @@ import com.mongodb.client.result.UpdateResult;
 public class TestMongoDB {
 	public static void main(String[] args) {
 
-		String user = "";
-		String password = "";
+		String user = "database01";
+		String password = "database01";
 		String host = "localhost";
 		int port = 27017;
 		String database = "database01";
 
-		String clientURI = "mongodb://" + user + ":" + password + "@" + host + ":" + port + "/" + database;
+		/*String clientURI = "mongodb://" + user + ":" + password + "@" + host + ":" + port + "/" + database;
 		MongoClientURI uri = new MongoClientURI(clientURI);
 
-		MongoClient mongoClient = new MongoClient(uri);
+		MongoClient mongoClient = new MongoClient(uri);*/
+		MongoClient mongoClient = new MongoClient(host,27017);
+        MongoCredential credential = MongoCredential.createCredential(user,database,password.toCharArray());
 
 		MongoDatabase db = mongoClient.getDatabase(database);
 
@@ -42,8 +39,7 @@ public class TestMongoDB {
 		
 		MongoCollection<Document> collection = db.getCollection("people");
 	
-		Document nowak = new Document("_id", 1)
-				.append("lastname", "Nowak")
+		Document nowak = new Document("_id", "Nowak")
                 .append("names", "Jan")
                 .append("age", 21)
                 .append("grades", Arrays.asList(new Document("programming", 5.0), new Document("mathematics", 4.0), new Document("physics", 3.0)));	
@@ -67,7 +63,7 @@ public class TestMongoDB {
  		for (Document doc : collection.find())
  		    System.out.println("find() " + doc.toJson());
  		
- 		Document myDoc = collection.find(lt("_id", 2)).first();
+ 		Document myDoc = collection.find(lte("_id", 2)).first();
 		System.out.println("lt(\"_id\", 2) " + myDoc.toJson());
  		
  		for (Document d : collection.find(or(
