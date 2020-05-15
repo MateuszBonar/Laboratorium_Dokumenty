@@ -26,7 +26,7 @@ createMenu = () => {
   console.log('6. Wypisz po imieniu ');
   console.log('7. Wyjscie');
 };
-function addAnimal(nameAnimal,age) {
+function addAnimal(nameAnimal, age) {
   animalId++;
   let userRef = firebase.database().ref('zoo/' + animalId);
   let object = {
@@ -49,7 +49,7 @@ function updateAnimal(updateAnimalId, nameAnimal, age) {
     age: age,
   };
   userRef.update(updateData);
-  console.log("Zmieniono!")
+  console.log('Zmieniono!');
 }
 function printData() {
   let userDataRef = firebase.database().ref('zoo').orderByKey();
@@ -57,41 +57,47 @@ function printData() {
     snapshot.forEach(function (childSnapshot) {
       let key = childSnapshot.key;
       let childData = childSnapshot.val();
-      console.log(key +" -> "); console.log(childData);
+      console.log(key + ' -> ');
+      console.log(childData);
     });
   });
 }
-function printByNameAnimal(name){
+function printByNameAnimal(name) {
   let userDataRef = firebase.database().ref('zoo').orderByKey();
   userDataRef.once('value').then(function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
-      let key = childSnapshot.key;
-      let childData = childSnapshot.val();
-      if(childData === name)
-      {
-        console.log(key +" -> "+childData);
+      childKey = childSnapshot.key; // Get the key of the child
+      childData = childSnapshot.val();
+      nameAnimal = childData.nameAnimal;
+
+      if (childData.nameAnimal == name) {
+        console.log("Id: "+childSnapshot.key);
+        console.log(childSnapshot.val());
       }
-     
     });
   });
 }
-function printDataById(printDataId){
-  let userDataRef = firebase.database().ref('zoo/'+printDataId).orderByKey();
+function printDataById(printDataId) {
+  let userDataRef = firebase
+    .database()
+    .ref('zoo/' + printDataId)
+    .orderByKey();
   userDataRef.once('value').then(function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
       let key = childSnapshot.key;
       let childData = childSnapshot.val();
-      console.log(key +" -> "); console.log(childData);
+      console.log(key + ' -> ');
+      console.log(childData);
     });
   });
 }
-fillData = ()=>{
-  addAnimal("Kaczuszka", 11);
-  addAnimal("Kotek",22);
-  addAnimal("Zyrafa",40);
-  addAnimal("Lew",12);
-  addAnimal('Malpka',5);
-}
+fillData = () => {
+  addAnimal('Kaczuszka', 11);
+  addAnimal('Kotek', 22);
+  addAnimal('Zyrafa', 40);
+  addAnimal('Lew', 12);
+  addAnimal('Malpka', 5);
+};
 
 action = (number) => {
   switch (parseInt(number)) {
@@ -102,7 +108,7 @@ action = (number) => {
     case 2:
       const nameAnimal = prompt('Nazwa zwierzatka: ');
       const age = prompt('Wiek: ');
-      addAnimal(nameAnimal,age);
+      addAnimal(nameAnimal, age);
       break;
     case 3:
       const updateAnimalId = prompt('Podaj id do update:');
@@ -115,12 +121,12 @@ action = (number) => {
       deleteAnimal(deleteAnimalId);
       break;
     case 5:
-      const printDataId = prompt('Podaj id do wypisania: ')
+      const printDataId = prompt('Podaj id do wypisania: ');
       printDataById(printDataId);
       break;
     case 6:
-      const name = prompt("Poda nazwe zwierzatka: ")
-      printByNameAnimal(name)
+      const name = prompt('Poda nazwe zwierzatka: ');
+      printByNameAnimal(name);
       break;
     case 7:
       choose = false;
